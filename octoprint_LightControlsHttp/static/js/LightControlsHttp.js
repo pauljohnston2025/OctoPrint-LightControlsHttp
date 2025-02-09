@@ -1,19 +1,18 @@
 /*
- * View model for OctoPrint-LightControls
+ * View model for OctoPrint-LightControlsHttp
  *
  * Author: RoboMagus
  * License: AGPLv3
  */
 $(function() {
-    function LightcontrolsViewModel(parameters) {
+    function LightControlsHttpViewModel(parameters) {
         var self = this;
 
-        var PLUGIN_ID = "LightControls"
+        var PLUGIN_ID = "LightControlsHttp"
 
         self.settings = parameters[0];
         self.control = parameters[1];
 
-        self.gpio_pin_options = [4, 5, 6, 12, 13, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27];
         self.light_controls = ko.observableArray(); // Raw settings
         self.lights = ko.observableArray(); // light states
 
@@ -42,7 +41,7 @@ $(function() {
                     dataType: "json",
                     data: JSON.stringify({
                         command: "setLightValue",
-                        pin: identifier,
+                        light_control_url: identifier,
                         percentage: newvalue
                     }),
                     contentType: "application/json; charset=UTF-8"
@@ -73,12 +72,12 @@ $(function() {
 
         self.updateLightsStructure = function() {
             self.lights([]);
-            ko.utils.arrayForEach(self.settings.settings.plugins.LightControls.light_controls(), function (item, index) {
+            ko.utils.arrayForEach(self.settings.settings.plugins.LightControlsHttp.light_controls(), function (item, index) {
                 self.lights.push({ 
                     name: item.name, 
-                    pin: item.pin,
+                    light_control_url: item.light_control_url,
                     ispwm: item.ispwm,
-                    light_val: ko.observable(0).withUpdater(sliderUpdate, self, item.pin()),
+                    light_val: ko.observable(0).withUpdater(sliderUpdate, self, item.light_control_url()),
                     light_toggle : function() {
                         this.light_val((this.light_val() == 0) ? 100 : 0);
                     }
@@ -94,7 +93,7 @@ $(function() {
 
         self.onAfterBinding = function() {
             // I want this to be placed after MultiWebcam :)
-            var lightsControl = $('#lightcontrols');
+            var lightsControl = $('#LightControlsHttp');
             var containerGeneral = $('#control-jog-general');
 
             lightsControl.insertAfter(containerGeneral);
@@ -104,20 +103,20 @@ $(function() {
         };
 
         self.onSettingsBeforeSave = function() {
-            // ko.utils.arrayForEach(self.settings.settings.plugins.LightControls.light_controls(), function (item, index) {
+            // ko.utils.arrayForEach(self.settings.settings.plugins.LightControlsHttp.light_controls(), function (item, index) {
             // });
         };
 
         self.onEventSettingsUpdated = function(payload) {
 			self.settings.requestData();
-            self.light_controls(self.settings.settings.plugins.LightControls.light_controls());
+            self.light_controls(self.settings.settings.plugins.LightControlsHttp.light_controls());
             self.updateLightsStructure();
         };
 
         self.addLightControl = function() {
-            self.settings.settings.plugins.LightControls.light_controls.push({
+            self.settings.settings.plugins.LightControlsHttp.light_controls.push({
                 name: ko.observable('Light '+self.light_controls().length), 
-                pin: ko.observable(''),
+                light_control_url: ko.observable(''),
                 ispwm: ko.observable('true'),
                 frequency: ko.observable('250'),
                 inverted: ko.observable('false'), 
@@ -128,19 +127,19 @@ $(function() {
                 onPrintPausedValue: ko.observable(''),
                 onPrintResumedValue: ko.observable(''),
                 onPrintEndValue: ko.observable('') });
-            self.light_controls(self.settings.settings.plugins.LightControls.light_controls());
+            self.light_controls(self.settings.settings.plugins.LightControlsHttp.light_controls());
         };
 
         self.removeLightControl = function(profile) {
-            self.settings.settings.plugins.LightControls.light_controls.remove(profile);
-            self.light_controls(self.settings.settings.plugins.LightControls.light_controls());
+            self.settings.settings.plugins.LightControlsHttp.light_controls.remove(profile);
+            self.light_controls(self.settings.settings.plugins.LightControlsHttp.light_controls());
         };
 
         self.onDataUpdaterPluginMessage = function(plugin, data) {
             if (plugin == PLUGIN_ID) {
-                if (data.pin != undefined && data.value != undefined) {        
+                if (data.light_control_url != undefined && data.value != undefined) {        
                     ko.utils.arrayForEach(self.lights(), function(item) {
-                        if(item.pin() == data.pin) {
+                        if(item.light_control_url() == data.light_control_url) {
                             item.light_val(data.value);
                         }
                     });
@@ -155,10 +154,10 @@ $(function() {
      * and a full list of the available options.
      */
     OCTOPRINT_VIEWMODELS.push({
-        construct: LightcontrolsViewModel,
+        construct: LightControlsHttpViewModel,
         // ViewModels your plugin depends on, e.g. loginStateViewModel, settingsViewModel, ...
         dependencies: [ "settingsViewModel", "controlViewModel" ],
-        // Elements to bind to, e.g. #settings_plugin_LightControls, #tab_plugin_LightControls, ...
-        elements: [ "#settings_plugin_lightcontrols_form", "#lightcontrols" ]
+        // Elements to bind to, e.g. #settings_plugin_LightControlsHttp, #tab_plugin_LightControlsHttp, ...
+        elements: [ "#settings_plugin_LightControlsHttp_form", "#LightControlsHttp" ]
     });
 });

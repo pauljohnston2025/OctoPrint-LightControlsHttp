@@ -1,4 +1,4 @@
 include README.md
-recursive-include octoprint_LightControls/templates *
-recursive-include octoprint_LightControls/translations *
-recursive-include octoprint_LightControls/static *
+recursive-include octoprint_LightControlsHttp/templates *
+recursive-include octoprint_LightControlsHttp/translations *
+recursive-include octoprint_LightControlsHttp/static *

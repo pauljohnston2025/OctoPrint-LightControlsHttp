@@ -1,8 +1,8 @@
 ---
 layout: plugin
 
-id: LightControls
-title: OctoPrint-LightControls
+id: LightControlsHttp
+title: OctoPrint-LightControlsHttp
 description: Adds easily configurable PWM Light controls to Octoprint Control Tab
 authors:
 - RoboMagus
@@ -11,9 +11,9 @@ license: AGPLv3
 # TODO
 date: 2021-07-09
 
-homepage: https://github.com/RoboMagus/OctoPrint-LightControls
-source: https://github.com/RoboMagus/OctoPrint-LightControls
-archive: https://github.com/RoboMagus/OctoPrint-LightControls/archive/main.zip
+homepage: https://github.com/RoboMagus/OctoPrint-LightControlsHttp
+source: https://github.com/RoboMagus/OctoPrint-LightControlsHttp
+archive: https://github.com/RoboMagus/OctoPrint-LightControlsHttp/archive/main.zip
 
 
 # TODO
@@ -80,7 +80,7 @@ compatibility:
 
 ## Screenshots:
 Added Light Controls to Control panel:
-![LightControls_ControlPanel](./screenshots/LightControls_ControlPanel.png)
+![LightControlsHttp_ControlPanel](./screenshots/LightControlsHttp_ControlPanel.png)
 
-LightControls Settings panel:
-![LightControls_Settings](./screenshots/LightControls_Settings.png)
+LightControlsHttp Settings panel:
+![LightControlsHttp_Settings](./screenshots/LightControlsHttp_Settings.png)

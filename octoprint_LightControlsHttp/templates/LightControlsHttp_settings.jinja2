@@ -1,26 +1,21 @@
 <!-- ko allowBindings: true -->
-<form id="settings_plugin_lightcontrols_form" class="form-horizontal">
+<form id="settings_plugin_LightControlsHttp_form" class="form-horizontal">
     <h2>{{ _('Light Controls') }}</h3>
-    <div class="alert alert-info">Note: The GPIO field uses GPIO numbers, not header pin numbers!</span></br>
-    <a href="https://pinout.xyz/"><span>To convert between the two, check pinout.xyz</span></a></div>
-    <div class="alert alert-info">PWM by default wil use Soft PWM that may cause lights to flicker.</br>
-        To avoid flickering, Hardware PWM can be used by selecting Hardware PWM enabled pins <i class="icon icon-info-sign" title="The Pi has 2 PWM channels. GPIO 18 or 12 can be used for PWM0, GPIO 19 or 13 can be used for PWM1." data-toggle="tooltip"></i>.<br>
-        Additional configuration is required to enable Hardware PWM. See <a href="https://github.com/Pioreactor/rpi_hardware_pwm" target="_blank">rpi_hardware_pwm</a> (used python module) and <a href="https://github.com/dotnet/iot/blob/main/Documentation/raspi-pwm.md#enabling-hardware-pwm" target="_blank">raspi-pwm</a> for more information.</br>
-        A restart of Octoprint is required before enabling Hardware PWM goes into effect!</div>
+    <div class="alert alert-info">Note: Urls must be unique!</span></br>
     <div class="row-fluid">
         <div class="span3 text-center"><h4>{{ _('Name') }}</h4></div>
-        <div class="span1 text-center"><h4>{{ _('GPIO') }}</h4></div>
+        <div class="span3 text-center"><h4>{{ _('URL') }}</h4></div>
         <div class="span1 text-center"><h4>{{ _('PWM') }}</h4></div>
         <div class="span2 text-center"><h4>{{ _('Frequency') }}</h4></div>
         <div class="span1 text-center"><h4>{{ _('Inverted') }}</h4></div>
     </div>
-    <div data-bind="foreach: settings.settings.plugins.LightControls.light_controls">
+    <div data-bind="foreach: settings.settings.plugins.LightControlsHttp.light_controls">
         <div class="row-fluid" style="margin-bottom: 5px">
             <div class="span3">
                 <input type="text" class="span12 text-right" data-bind="value: name">
             </div>
-            <div class="span1">
-                <select style="width: 100%" data-bind="options: $parent.gpio_pin_options, value: pin"></select>
+            <div class="span3">
+                <input type="text" class="span12 text-right" data-bind="value: light_control_url">
             </div>
             <div class="span1">
                 <input style="padding: 4px; margin: 2px;" type="checkbox" class="span12 text-right" data-bind="checked: ispwm">
@@ -50,7 +45,7 @@
         <div class="span2 text-center"><h4>{{ _('on Connect Value') }}</h4></div>
         <div class="span2 text-center"><h4>{{ _('on Disconnect Value') }}</h4></div>   
     </div>
-    <div data-bind="foreach: settings.settings.plugins.LightControls.light_controls">
+    <div data-bind="foreach: settings.settings.plugins.LightControlsHttp.light_controls">
         <div class="row-fluid" style="margin-bottom: 5px">
             <div class="span3" style="text-align:right; line-height: 32px;">
                 <span data-bind="text: name"></span>
@@ -76,7 +71,7 @@
         <div class="span2 text-center"><h4>{{ _('on Resume Value') }}</h4></div>
         <div class="span2 text-center"><h4>{{ _('on End Value') }}</h4></div>   
     </div>
-    <div data-bind="foreach: settings.settings.plugins.LightControls.light_controls">
+    <div data-bind="foreach: settings.settings.plugins.LightControlsHttp.light_controls">
         <div class="row-fluid" style="margin-bottom: 5px">
             <div class="span3" style="text-align:right; line-height: 32px;">
                 <span data-bind="text: name"></span>
