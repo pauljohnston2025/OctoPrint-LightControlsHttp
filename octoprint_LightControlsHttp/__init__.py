@@ -6,6 +6,7 @@ import octoprint.plugin
 from octoprint.events import eventManager, Events
 import sys, traceback
 import flask
+import requests
 
 def clamp(n, _min, _max):
     return max(_min, min(n, _max))
@@ -20,9 +21,6 @@ class LightControlsHttpPlugin(  octoprint.plugin.SettingsPlugin,
 
     defaultEntry = {'name': '',
                     'light_control_url': '',
-                    'ispwm': True,
-                    'frequency': 250,
-                    'inverted': False,
                     'onOctoprintStartValue': '',
                     'onConnectValue': '',
                     'onDisconnectValue': '',
@@ -42,6 +40,7 @@ class LightControlsHttpPlugin(  octoprint.plugin.SettingsPlugin,
 
         try:
             self.Lights[light_control_url] = copy.deepcopy(settings)
+            self.Lights[light_control_url]["value"] = 0
         except:
             exc_type, exc_value, exc_tb = sys.exc_info()
             self._logger.error("exception in light_startup(): {}".format(exc_type))
@@ -51,20 +50,29 @@ class LightControlsHttpPlugin(  octoprint.plugin.SettingsPlugin,
         self._logger.debug("LightControlsHttp light_cleanup, light_control_url: {}".format(light_control_url))
 
     def set_light_value(self, light_control_url, value):
-        self._logger.debug("LightControlsHttp set_light_value light_control_url: {}, value: {}".format(light_control_url, value))
+        if light_control_url in self.Lights:
+            iVal = int(value)
+            # todo make the min/max configurable, its currently a % disaplay only, we will hard code 0-255 range here
+            max_value = 255
+            percentage_value = iVal
+            raw_value = percentage_value / 100.0 * max_value
+            raw_url = light_control_url.replace('{value}', str(int(raw_value)))
+            self._logger.debug(f"set_light_value {raw_url}")
+            # default to localhost, todo: allow specifying full remote url (or host prefix)
+            requests.get("http://127.0.0.1:80" + raw_url)
 
+            if iVal != self.get_light_value(light_control_url):
+                self._plugin_manager.send_plugin_message(self._identifier, dict(light_control_url=light_control_url, value=iVal))
+            self.Lights[light_control_url]["value"] = iVal
 
     def get_light_value(self, light_control_url):
         self._logger.debug("LightControlsHttp get_light_value light_control_url: {}".format(light_control_url))
-        if light_control_url in self.Lights:
-            return self.Lights[light_control_url]["value"]
-        return None
+        return self.Lights.get(light_control_url, {}).get("value", 0)
 
     def send_light_values(self):
         self._logger.debug("send_light_values")
         for light_control_url in self.Lights:
-            self._logger.debug(f"send_light_values {light_control_url} {self.Lights.get(light_control_url, {}).get('value')}")
-            # self._plugin_manager.send_plugin_message(self._identifier, dict(light_control_url=light_control_url, value=self.Lights[light_control_url]["value"]))
+            self._plugin_manager.send_plugin_message(self._identifier, dict(light_control_url=light_control_url, value=self.get_light_value(light_control_url)))
 
     def LightName2light_control_url(self, name):
         light_control_urlArray = [light_control_url for light_control_url, light in self.Lights.items() if light['name'] == name]
@@ -100,7 +108,7 @@ class LightControlsHttpPlugin(  octoprint.plugin.SettingsPlugin,
         if request == "getLightValues":
             response = dict()
             for light_control_url in self.Lights:
-                response(light_control_url=self.Lights[light_control_url]["value"])
+                response(light_control_url=self.get_light_value(light_control_url))
             return flask.jsonify(response)
 
     def is_api_adminonly(self):
@@ -142,9 +150,6 @@ class LightControlsHttpPlugin(  octoprint.plugin.SettingsPlugin,
             light_controls=[{
                 'name': '',
                 'light_control_url': None,
-                'ispwm': True,
-                'frequency': 250,
-                'inverted': False,
                 'onOctoprintStartValue': '',
                 'onConnectValue': '',
                 'onDisconnectValue': '',

@@ -76,7 +76,6 @@ $(function() {
                 self.lights.push({ 
                     name: item.name, 
                     light_control_url: item.light_control_url,
-                    ispwm: item.ispwm,
                     light_val: ko.observable(0).withUpdater(sliderUpdate, self, item.light_control_url()),
                     light_toggle : function() {
                         this.light_val((this.light_val() == 0) ? 100 : 0);
@@ -117,9 +116,6 @@ $(function() {
             self.settings.settings.plugins.LightControlsHttp.light_controls.push({
                 name: ko.observable('Light '+self.light_controls().length), 
                 light_control_url: ko.observable(''),
-                ispwm: ko.observable('true'),
-                frequency: ko.observable('250'),
-                inverted: ko.observable('false'), 
                 onOctoprintStartValue: ko.observable(''),
                 onConnectValue: ko.observable(''),
                 onDisconnectValue: ko.observable(''),

@@ -1,13 +1,12 @@
 <!-- ko allowBindings: true -->
 <form id="settings_plugin_LightControlsHttp_form" class="form-horizontal">
     <h2>{{ _('Light Controls') }}</h3>
-    <div class="alert alert-info">Note: Urls must be unique!</span></br>
+    <div class="alert alert-info">Note: Names and Urls must be unique! Otherwise it will pick a random one</br></div>
+    <div class="alert alert-info">Values are expressed in percentages (0-100%), but will fill out the '{value}' part of the url with a number in the range 0-255</br></div>
+    <div class="alert alert-info">eg. url '/lights?value={value}' will send '/lights?value=0' for 0% and '/lights?value=255' for 100%</br></div>
     <div class="row-fluid">
         <div class="span3 text-center"><h4>{{ _('Name') }}</h4></div>
         <div class="span3 text-center"><h4>{{ _('URL') }}</h4></div>
-        <div class="span1 text-center"><h4>{{ _('PWM') }}</h4></div>
-        <div class="span2 text-center"><h4>{{ _('Frequency') }}</h4></div>
-        <div class="span1 text-center"><h4>{{ _('Inverted') }}</h4></div>
     </div>
     <div data-bind="foreach: settings.settings.plugins.LightControlsHttp.light_controls">
         <div class="row-fluid" style="margin-bottom: 5px">
@@ -16,18 +15,6 @@
             </div>
             <div class="span3">
                 <input type="text" class="span12 text-right" data-bind="value: light_control_url">
-            </div>
-            <div class="span1">
-                <input style="padding: 4px; margin: 2px;" type="checkbox" class="span12 text-right" data-bind="checked: ispwm">
-            </div>
-            <div class="span2">
-                <input type="number" min="50" max="5000" class="span12 text-right" data-bind="value: frequency, enable: ispwm">
-            </div>
-            <div class="span1">
-                <input style="padding: 4px; margin: 2px;" type="checkbox" class="span12 text-right" data-bind="checked: inverted">
-            </div>
-            <div class="span1">
-                <button title="Remove Light" class="btn btn-danger" data-bind="click: $parent.removeLightControl"><i class="fa fa-trash-o"></i></button>
             </div>
         </div>
     </div>
